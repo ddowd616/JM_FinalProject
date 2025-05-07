@@ -23,6 +23,7 @@ public class CurrencyCodeController {
     public List<CurrencyCode> getAllCurrencyCodes(){
         return service.getAllCurrencyCodes();
     }
+
     @GetMapping("/{code}")
     public ResponseEntity<CurrencyCode> getCurrencyCodeByCode(@PathVariable String code){
         return service.getCurrencyCodeByCode(code)
