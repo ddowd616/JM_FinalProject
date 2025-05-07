@@ -1,0 +1,16 @@
+services:
+  postgres-db:
+    container_name: currencyExchangeRedo
+    image: postgres # use latest official postgres version
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: currencyExchangeRedo
+      POSTGRES_HOST_AUTH_METHOD: password
+    ports:
+      - "5491:5432"
+
+volumes:
+  postgresql_data:
+    driver: local
