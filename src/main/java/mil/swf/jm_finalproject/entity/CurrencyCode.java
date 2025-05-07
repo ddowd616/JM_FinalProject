@@ -1,15 +1,20 @@
 package mil.swf.jm_finalproject.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Immutable;
 
 
 @Entity
+@Immutable
 @Table(name = "currency_code")
 public class CurrencyCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "currency_id")
     private Long currencyId;
+    @Column(name = "currency_name",nullable = false)
     private String currencyName;
+    @Column(name = "currency_code",nullable = false)
     private String currencyCode;
 
     public CurrencyCode(String currencyName, String currencyCode) {
@@ -17,7 +22,7 @@ public class CurrencyCode {
         this.currencyCode = currencyCode;
     }
 
-    public CurrencyCode() {
+    protected CurrencyCode() {
     }
 
     public Long getCurrencyId() {
