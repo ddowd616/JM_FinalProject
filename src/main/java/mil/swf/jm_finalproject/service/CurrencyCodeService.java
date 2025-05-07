@@ -20,6 +20,6 @@ public class CurrencyCodeService {
 
     public Optional<CurrencyCode> getCurrencyCodeByCode(String code) {
         return repository.findByCurrencyCode(code);
-        // THis is a new comment
+
     }
 }
