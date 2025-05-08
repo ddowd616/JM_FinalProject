@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "countryId")
     private Country countryOfOrigin;
@@ -28,11 +28,11 @@ public class UserInfo {
     }
 
     public Long getUserId() {
-        return userId;
+        return id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(Long id) {
+        this.id = id;
     }
 
     public Country getCountryOfOrigin() {

@@ -18,24 +18,27 @@ public class UserInfoService {
     }
 
     public UserInfoDTO createUserInfo(UserInfoDTO dto){
-       Country country = countryRepository.findById(dto.getCountryId())
-               .orElseThrow(() -> new RuntimeException("Country not found"));
+        UserInfoDTO ReqRes = new UserInfoDTO();
+        Country country = countryRepository.findById(dto.getCountryId())
+                .orElseThrow(() -> new RuntimeException("Country not found"));
 
-       UserInfo userInfo = new UserInfo(
-               country,
-               dto.getUserName(),
-               dto.getUserPassword(),
-               dto.getDateOfBirth()
-       );
+        UserInfo userInfo = new UserInfo(
+                country,
+                dto.getUserName(),
+                dto.getUserPassword(),
+                dto.getDateOfBirth()
+        );
 
-       UserInfo saved = userInfoRepository.save(userInfo);
+        UserInfo saved = userInfoRepository.save(userInfo);
 
-       return new UserInfoDTO(
-               saved.getUserId(),
-               saved.getCountryOfOrigin().getCountryId(),
-               saved.getUserName(),
-               saved.getUserPassword(),
-               saved.getDateOfBirth()
-       );
+        // Setup return
+        ReqRes.setUserId(saved.getUserId());
+        ReqRes.setUserName(saved.getUserName());
+        ReqRes.setUserPassword(saved.getUserPassword());
+        ReqRes.setCountryId(saved.getCountryOfOrigin().getCountryId());
+        ReqRes.setDateOfBirth(saved.getDateOfBirth());
+
+        return ReqRes;
+
     }
 }
