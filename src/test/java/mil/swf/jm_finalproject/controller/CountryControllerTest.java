@@ -27,8 +27,6 @@ public class CountryControllerTest {
 
     @Test
     void testGetAllCountries() throws Exception {
-        var usa = new Country(new CurrencyCode("US Dollar", "USD"),"United States","US Dollar");
-        var uk = new Country(new CurrencyCode("British Pound Sterling","GPB"),"United Kingdom","British Pound Sterling");
         var usaDTO = new CountryDTO("United States","US Dollar","USD","US Dollar");
         var ukDTO = new CountryDTO("United Kingdom", "British Pound Sterling","GPB","British Pound Sterling");
         when(countryService.getAllCountries()).thenReturn(List.of(usaDTO,ukDTO));
