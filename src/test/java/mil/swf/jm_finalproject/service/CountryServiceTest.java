@@ -44,8 +44,8 @@ public class CountryServiceTest {
 
     @Test
     void testGetCountryByCountryId_Found(){
-        CurrencyCode usd = new CurrencyCode("USD","US Dollar");
-        Country usa = new Country(usd, "United States", "USD");
+        CurrencyCode usd = new CurrencyCode("US Dollar","USD");
+        Country usa = new Country(usd, "United States", "US Dollar");
         usa.setCountryId(1L);
 
         when(countryRepository.findById(1L)).thenReturn(Optional.of(usa));
@@ -53,7 +53,11 @@ public class CountryServiceTest {
         var result = countryService.getCountryByID(1L);
 
         assertTrue(result.isPresent());
-        assertEquals("United States", result.get().getCountryName());
+        var dto = result.get();
+        assertEquals("United States", dto.getCountryName());
+        assertEquals("US Dollar", dto.getCurrencyName());
+        assertEquals("USD", dto.getCurrencyCode());
+        assertEquals("US Dollar", dto.getCurrencyCountryUses());
     }
 
     @Test

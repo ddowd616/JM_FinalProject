@@ -2,16 +2,15 @@ package mil.swf.jm_finalproject.entity;
 
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Immutable;
+
 
 @Entity
-@Immutable
 @Table(name = "country")
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long countryId;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "currency_id")
     private CurrencyCode currency;
 
