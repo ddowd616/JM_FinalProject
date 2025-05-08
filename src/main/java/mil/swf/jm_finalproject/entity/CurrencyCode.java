@@ -10,7 +10,6 @@ import org.hibernate.annotations.Immutable;
 public class CurrencyCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "currency_id")
     private Long currencyId;
     @Column(name = "currency_name",nullable = false)
     private String currencyName;
