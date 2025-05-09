@@ -41,5 +41,19 @@ public class ItineraryService {
                 dto.getUserWantsCurrencyExchangeRate()
         );
 
+        Itinerary saveEntry = itineraryRepository.save(itineraryEntry);
+
+        ReqRes.setId(saveEntry.getId());
+        ReqRes.setUserId(saveEntry.getUserInfo().getUserId());
+        ReqRes.setCountryId(saveEntry.getCountry().getCountryId());
+        ReqRes.setOrderOnTrip(saveEntry.getOrderOnTrip());
+        ReqRes.setCountryOfOrigin(saveEntry.getCountryOfOrigin());
+        ReqRes.setStartDate(saveEntry.getStartDate());
+        ReqRes.setEndDate(saveEntry.getEndDate());
+        ReqRes.setDaysSpentInCountry(saveEntry.getDaysSpentInCountry());
+        ReqRes.setUserWantsCurrencyExchangeRate(saveEntry.getUserWantsCurrencyExchangeRate());
+
+        return ReqRes;
+
     }
 }
