@@ -5,6 +5,7 @@ import mil.swf.jm_finalproject.service.UserInfoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import mil.swf.jm_finalproject.entity.Country;
@@ -13,6 +14,7 @@ import mil.swf.jm_finalproject.entity.CurrencyCode;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -95,6 +97,28 @@ public class UserInfoControllerTest {
                 .andExpect(jsonPath("$.userName").value("updatedName"))
                 .andExpect(jsonPath("$.userPassword").value("updatedPass123"))
                 .andExpect(jsonPath("$.dateOfBirth").value("2001-11-11"));
+
+    }
+
+    @Test
+    void testUpdateUserInfo_NotFound() throws Exception {
+        Long userIdLookingFor = 99L;
+
+        UserInfoDTO updateDTO = new UserInfoDTO(25L,1L,"updatedName","updatedPass123",LocalDate.of(2001,11,11));
+
+        when(userInfoService.updateUserInfo(eq(userIdLookingFor),any(UserInfoDTO.class))).thenThrow(new RuntimeException("User not found"));
+
+        mockMvc.perform(put("/api/userInfo/{id}",userIdLookingFor)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                            {
+                              "countryId": 1,
+                              "userName": "updatedName",
+                              "userPassword": "updatedPass123",
+                              "dateOfBirth": "2001-11-11"
+                            }
+                        """))
+                .andExpect(status().isNotFound());
 
     }
 }
