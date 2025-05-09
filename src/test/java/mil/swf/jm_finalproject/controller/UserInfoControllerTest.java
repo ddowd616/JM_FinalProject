@@ -60,4 +60,13 @@ public class UserInfoControllerTest {
                 .andExpect(jsonPath("$.userPassword").value("123#@"))
                 .andExpect(jsonPath("$.dateOfBirth").value("2018-11-23"));
     }
+
+    @Test
+    void testGetUserInfoById_NotFound() throws Exception {
+        when(userInfoService.getUserInfoById(300L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/userInfo/300"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
+    }
 }
