@@ -11,6 +11,7 @@ import mil.swf.jm_finalproject.entity.Country;
 import mil.swf.jm_finalproject.entity.CurrencyCode;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -44,5 +45,19 @@ public class UserInfoControllerTest {
                 .andExpect(jsonPath("$.userId").value(1))
                 .andExpect(jsonPath("$.countryId").value(1))
                 .andExpect(jsonPath("$.userName").value("ddowd"));
+    }
+
+    @Test
+    void testGetUserInfoById_Found() throws Exception {
+        var userDTO = new UserInfoDTO(4L,2L,"ddowd","123#@",LocalDate.of(2018,11,23));
+        when(userInfoService.getUserInfoById(4L)).thenReturn(Optional.of(userDTO));
+
+        mockMvc.perform(get("/api/userInfo/4"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(4))
+                .andExpect(jsonPath("$.countryId").value(2))
+                .andExpect(jsonPath("$.userName").value("ddowd"))
+                .andExpect(jsonPath("$.userPassword").value("123#@"))
+                .andExpect(jsonPath("$.dateOfBirth").value("2018-11-23"));
     }
 }
