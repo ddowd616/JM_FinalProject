@@ -7,6 +7,8 @@ import mil.swf.jm_finalproject.repository.CountryRepository;
 import mil.swf.jm_finalproject.repository.UserInfoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserInfoService {
     private final UserInfoRepository userInfoRepository;
@@ -40,5 +42,16 @@ public class UserInfoService {
 
         return ReqRes;
 
+    }
+
+    public Optional<UserInfoDTO> getUserInfoById(Long id) {
+        Optional<UserInfo> userInfo = userInfoRepository.findById(id);
+        return userInfo.map(u -> new UserInfoDTO(
+                u.getUserId(),
+                u.getCountryOfOrigin().getCountryId(),
+                u.getUserName(),
+                u.getUserPassword(),
+                u.getDateOfBirth()
+        ));
     }
 }

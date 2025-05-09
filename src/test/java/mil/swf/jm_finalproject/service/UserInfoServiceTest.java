@@ -15,8 +15,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -54,8 +53,32 @@ public class UserInfoServiceTest {
         assertNotNull(savedUser.getUserId());
         assertEquals("ddowd",savedUser.getUserName());
         assertEquals(1L,savedUser.getCountryId());
-
-
-
     }
+
+    @Test
+    void testGetUserInfoById_Found(){
+        CurrencyCode usd = new CurrencyCode("US Dollar","USD");
+        Country usa = new Country(usd, "United States", "US Dollar");
+        UserInfo userInfo = new UserInfo(usa,"ddowd","123@#",LocalDate.of(2018,10,10));
+        userInfo.setUserId(1L);
+
+        when(userInfoRepository.findById(1L)).thenReturn(Optional.of(userInfo));
+
+        var result = userInfoService.getUserInfoById(1L);
+
+        assertTrue(result.isPresent());
+        var dto = result.get();
+        assertEquals("ddowd",dto.getUserName());
+        assertEquals("123@#",dto.getUserPassword());
+    }
+
+    @Test
+    void testGetUserInfoById_NotFound(){
+        when(userInfoRepository.findById(400L)).thenReturn(Optional.empty());
+
+        var result = userInfoService.getUserInfoById(400L);
+
+        assertTrue(result.isEmpty());
+    }
+
 }
