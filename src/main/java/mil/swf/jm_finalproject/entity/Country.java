@@ -20,7 +20,7 @@ public class Country {
     @Column(name = "currency_country_uses", nullable = false)
     private String currencyCountryUses;
 
-    protected Country(){
+    public Country(){
 
     }
 
