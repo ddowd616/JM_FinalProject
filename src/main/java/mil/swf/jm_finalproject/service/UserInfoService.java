@@ -76,4 +76,13 @@ public class UserInfoService {
                 updatedUser.getDateOfBirth()
         );
     }
+
+    public void deleteUserInfo(Long id) {
+        if(!userInfoRepository.existsById(id)) {
+        throw new RuntimeException("UserInfo with id " + id + " not found");
+        }
+        userInfoRepository.deleteById(id);
+
+    }
+
 }

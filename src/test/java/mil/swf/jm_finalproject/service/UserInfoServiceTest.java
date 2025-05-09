@@ -17,7 +17,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 
 public class UserInfoServiceTest {
@@ -136,6 +137,31 @@ public class UserInfoServiceTest {
         when(countryRepository.findById(countryId)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class,()->userInfoService.updateUserInfo(userId,updateDTO));
+    }
+
+    @Test
+    void testDeleteUser_Found(){
+        Long userId = 1L;
+
+        when(userInfoRepository.existsById(userId)).thenReturn(true);
+
+        userInfoService.deleteUserInfo(userId);
+
+        verify(userInfoRepository).deleteById(userId);
+    }
+
+    @Test
+    void testDeleteUser_NotFound(){
+        Long userId = 99L;
+
+        when(userInfoRepository.existsById(userId)).thenReturn(false);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userInfoService.deleteUserInfo(userId);
+        });
+
+        assertEquals("UserInfo with id 99 not found", exception.getMessage());
+        verify(userInfoRepository, never()).deleteById(anyLong());
     }
 
 }
