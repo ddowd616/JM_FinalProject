@@ -17,7 +17,7 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -120,5 +120,27 @@ public class UserInfoControllerTest {
                         """))
                 .andExpect(status().isNotFound());
 
+    }
+
+    @Test
+    void testDeleteUserInfo_Found() throws Exception {
+        Long userId = 1L;
+
+        doNothing().when(userInfoService).deleteUserInfo(userId);
+
+        mockMvc.perform(delete("/api/userInfo/{id}",userId))
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    void testDeleteUserInfo_NotFound() throws Exception {
+        Long userId = 99L;
+
+        doThrow(new RuntimeException("UserInfo with id 99 not found")).when(userInfoService).deleteUserInfo(userId);
+
+        mockMvc.perform(delete("/api/userInfo/{id}",userId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
     }
 }

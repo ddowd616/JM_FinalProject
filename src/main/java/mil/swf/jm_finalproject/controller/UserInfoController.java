@@ -37,5 +37,15 @@ public class UserInfoController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserInfo(@PathVariable Long id){
+        try {
+            userInfoService.deleteUserInfo(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 
 }
