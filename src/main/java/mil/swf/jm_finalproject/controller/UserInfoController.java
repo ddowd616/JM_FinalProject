@@ -27,5 +27,15 @@ public class UserInfoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserInfoDTO> updateUserInfo(@PathVariable Long id,@RequestBody UserInfoDTO userInfoDTO){
+        try {
+            UserInfoDTO updatedUser = userInfoService.updateUserInfo(id,userInfoDTO);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }

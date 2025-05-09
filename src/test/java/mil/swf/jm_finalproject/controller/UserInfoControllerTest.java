@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -68,5 +69,32 @@ public class UserInfoControllerTest {
         mockMvc.perform(get("/api/userInfo/300"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(""));
+    }
+
+    @Test
+    void testUpdateUserInfo_Success() throws Exception {
+        Long userId = 9L;
+
+        UserInfoDTO updateDTO = new UserInfoDTO(userId,1L,"updatedName","updatedPass123",LocalDate.of(2001,11,11));
+
+        when(userInfoService.updateUserInfo(eq(userId),any(UserInfoDTO.class))).thenReturn(updateDTO);
+
+        mockMvc.perform(put("/api/userInfo/{id}",userId)
+                .contentType("application/json")
+                .content("""
+                            {
+                              "countryId": 1,
+                              "userName": "updatedName",
+                              "userPassword": "updatedPass123",
+                              "dateOfBirth": "2001-11-11"
+                            }
+                        """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(9))
+                .andExpect(jsonPath("$.countryId").value(1))
+                .andExpect(jsonPath("$.userName").value("updatedName"))
+                .andExpect(jsonPath("$.userPassword").value("updatedPass123"))
+                .andExpect(jsonPath("$.dateOfBirth").value("2001-11-11"));
+
     }
 }
