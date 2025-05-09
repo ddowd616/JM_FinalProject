@@ -81,4 +81,61 @@ public class UserInfoServiceTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    void testUpdateUserInfoWithId_Success(){
+        Long userId = 65L;
+        Long countryId = 3L;
+
+        CurrencyCode eur = new CurrencyCode("Euro", "EUR");
+        Country fra = new Country(eur, "France", "Euro");
+        fra.setCountryId(countryId);
+
+        UserInfo existingUser = new UserInfo(fra,"mana12","34543@#",LocalDate.of(1992,12,26));
+        existingUser.setUserId(userId);
+
+        UserInfoDTO updateDTO = new UserInfoDTO(userId,countryId,"newName","newPass",LocalDate.of(2000,11,14));
+
+        when(userInfoRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(countryRepository.findById(countryId)).thenReturn(Optional.of(fra));
+        when(userInfoRepository.save(any(UserInfo.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserInfoDTO result = userInfoService.updateUserInfo(userId, updateDTO);
+
+        assertEquals("newName",result.getUserName());
+        assertEquals("newPass",result.getUserPassword());
+        assertEquals(LocalDate.of(2000,11,14),result.getDateOfBirth());
+        assertEquals(countryId,result.getCountryId());
+
+    }
+
+    @Test
+    void testUpdateUserInfo_UserNotFound(){
+        Long userId = 99L;
+        UserInfoDTO updateUserInfoDTO = new UserInfoDTO(userId,1L,"anyUser","pass",LocalDate.of(2012,9,12));
+
+        when(userInfoRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,() -> userInfoService.updateUserInfo(userId,updateUserInfoDTO));
+    }
+
+    @Test
+    void testUpdateUserInfo_CountryNotFound(){
+        Long userId = 3L;
+        Long countryId =10L;
+
+        CurrencyCode eur = new CurrencyCode("Euro","EUR");
+        Country ger = new Country(eur,"Germany", "Euro");
+        ger.setCountryId(8L);
+
+        UserInfo existingUser = new UserInfo(ger,"user","pass",LocalDate.of(2011,10,28));
+        existingUser.setUserId(userId);
+
+        UserInfoDTO updateDTO = new UserInfoDTO(userId,countryId,"user","pass",LocalDate.of(2019,6,16));
+
+        when(userInfoRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(countryRepository.findById(countryId)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,()->userInfoService.updateUserInfo(userId,updateDTO));
+    }
+
 }

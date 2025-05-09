@@ -54,4 +54,26 @@ public class UserInfoService {
                 u.getDateOfBirth()
         ));
     }
+
+    public UserInfoDTO updateUserInfo(Long userId, UserInfoDTO dto) {
+        UserInfo userInfo = userInfoRepository.findById(userId)
+                .orElseThrow(()-> new RuntimeException("User not found"));
+        Country country = countryRepository.findById(dto.getCountryId())
+                .orElseThrow(()-> new RuntimeException("Country not found"));
+
+        userInfo.setCountryOfOrigin(country);
+        userInfo.setUserName(dto.getUserName());
+        userInfo.setUserPassword(dto.getUserPassword());
+        userInfo.setDateOfBirth(dto.getDateOfBirth());
+
+        UserInfo updatedUser = userInfoRepository.save(userInfo);
+
+        return new UserInfoDTO(
+                updatedUser.getUserId(),
+                updatedUser.getCountryOfOrigin().getCountryId(),
+                updatedUser.getUserName(),
+                updatedUser.getUserPassword(),
+                updatedUser.getDateOfBirth()
+        );
+    }
 }
