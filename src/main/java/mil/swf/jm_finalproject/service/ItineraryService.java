@@ -108,4 +108,10 @@ public class ItineraryService {
 
         return response;
     }
+
+    public void deleteItineraryEntry(Long id) {
+        Itinerary itineraryEntry = itineraryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Itinerary Entry not found"));
+        itineraryRepository.delete(itineraryEntry);
+    }
 }

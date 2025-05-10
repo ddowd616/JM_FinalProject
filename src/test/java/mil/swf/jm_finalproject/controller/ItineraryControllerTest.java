@@ -128,4 +128,26 @@ public class ItineraryControllerTest {
                 .andExpect(jsonPath("$.daysSpentInCountry").value(4))
                 .andExpect(jsonPath("$.userWantsCurrencyExchangeRate").value(true));
     }
+
+    @Test
+    void testUpdateItinerary_NotFound() throws Exception {
+        when(itineraryService.updateItineraryEntry(eq(1L),any(ItineraryDTO.class))).thenThrow(new RuntimeException("Itinerary Entry not found"));
+
+        mockMvc.perform(put("/api/itineraries/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                          "userId": 34,
+                          "countryId": 42,
+                          "orderOnTrip": 6,
+                          "countryOfOrigin": false,
+                          "startDate": "2024-04-05",
+                          "endDate": "2024-04-09",
+                          "daysSpentInCountry": 4,
+                          "userWantsCurrencyExchangeRate": true
+                        }
+                    """))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("Itinerary Entry not found")));
+    }
 }

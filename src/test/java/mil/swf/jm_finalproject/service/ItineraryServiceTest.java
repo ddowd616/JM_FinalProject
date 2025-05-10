@@ -170,4 +170,31 @@ public class ItineraryServiceTest {
         assertEquals("Itinerary Entry not found",ex.getMessage());
     }
 
+    @Test
+    void testDeleteItineraryEntry_Success(){
+        Long itineraryId = 46L;
+        Itinerary mockItinerary = new Itinerary();
+        mockItinerary.setId(itineraryId);
+
+        when(itineraryRepository.findById(itineraryId)).thenReturn(Optional.of(mockItinerary));
+
+        itineraryService.deleteItineraryEntry(itineraryId);
+
+        verify(itineraryRepository).delete(mockItinerary);
+
+
+    }
+
+    @Test
+    void testDeleteItineraryEntry_NotFound(){
+        Long itineraryId = 999L;
+        when(itineraryRepository.findById(itineraryId)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class,() -> itineraryService.deleteItineraryEntry(itineraryId));
+
+        assertEquals("Itinerary Entry not found",ex.getMessage());
+        verify(itineraryRepository,never()).delete(any());
+
+    }
+
 }
