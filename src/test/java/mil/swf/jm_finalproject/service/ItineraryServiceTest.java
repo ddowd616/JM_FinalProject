@@ -107,4 +107,13 @@ public class ItineraryServiceTest {
 
     }
 
+    @Test
+    void testGetItineraryEntryById_NotFound(){
+        when(itineraryRepository.findById(300L)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class,()->{itineraryService.getItineraryEntryById(300L);});
+
+        assertEquals("Itinerary Entry not found",exception.getMessage());
+    }
+
 }
