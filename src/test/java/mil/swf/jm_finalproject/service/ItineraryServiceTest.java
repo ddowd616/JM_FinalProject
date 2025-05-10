@@ -74,4 +74,37 @@ public class ItineraryServiceTest {
 
     }
 
+    @Test
+    void testGetItineraryEntryById_Found(){
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUserId(89L);
+
+    Country country = new Country();
+    country.setCountryId(56L);
+
+    Itinerary itinerary = new Itinerary(
+            userInfo,
+            country,
+            4,
+            true,
+            LocalDate.of(2019,3,12),
+            LocalDate.of(2019,6,12),
+            90,
+            true
+    );
+    itinerary.setId(20L);
+
+    when(itineraryRepository.findById(20L)).thenReturn(Optional.of(itinerary));
+
+    ItineraryDTO result = itineraryService.getItineraryEntryById(20L);
+
+    assertNotNull(result);
+    assertEquals(20L,result.getId());
+    assertEquals(89L,result.getUserId());
+    assertEquals(56L,result.getCountryId());
+    assertEquals(4,result.getOrderOnTrip());
+    assertTrue(result.getUserWantsCurrencyExchangeRate());
+
+    }
+
 }

@@ -56,4 +56,23 @@ public class ItineraryService {
         return ReqRes;
 
     }
+
+    public ItineraryDTO getItineraryEntryById(Long id) {
+        Itinerary itinerary = itineraryRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Itinerary Entry not found"));
+
+        ItineraryDTO dto = new ItineraryDTO();
+        dto.setId(itinerary.getId());
+        dto.setUserId(itinerary.getUserInfo().getUserId());
+        dto.setCountryId(itinerary.getCountry().getCountryId());
+        dto.setOrderOnTrip(itinerary.getOrderOnTrip());
+        dto.setCountryOfOrigin(itinerary.getCountryOfOrigin());
+        dto.setStartDate(itinerary.getStartDate());
+        dto.setEndDate(itinerary.getEndDate());
+        dto.setDaysSpentInCountry(itinerary.getDaysSpentInCountry());
+        dto.setUserWantsCurrencyExchangeRate(itinerary.getUserWantsCurrencyExchangeRate());
+
+        return dto;
+
+    }
 }
