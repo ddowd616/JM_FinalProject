@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -149,5 +149,29 @@ public class ItineraryControllerTest {
                     """))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("Itinerary Entry not found")));
+    }
+
+    @Test
+    void testDeleteItineraryEntry_Success() throws Exception {
+        Long itineraryId = 2L;
+
+        mockMvc.perform(delete("/api/itineraries/{id}",itineraryId))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Itinerary deleted successfully."));
+
+        verify(itineraryService).deleteItineraryEntry(itineraryId);
+    }
+
+    @Test
+    void testDeleteItineraryEntry_NotFound() throws Exception {
+        Long itineraryId = 999L;
+        doThrow(new RuntimeException("Itinerary Entry not found"))
+                .when(itineraryService).deleteItineraryEntry(itineraryId);
+
+        mockMvc.perform(delete("/api/itineraries/{id}",itineraryId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Itinerary Entry not found"));
+
+        verify(itineraryService).deleteItineraryEntry(itineraryId);
     }
 }

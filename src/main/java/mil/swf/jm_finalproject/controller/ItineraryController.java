@@ -32,5 +32,11 @@ public class ItineraryController {
         return ResponseEntity.ok(updated);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteItinerary(@PathVariable Long id){
+        itineraryService.deleteItineraryEntry(id);
+        return ResponseEntity.ok("Itinerary deleted successfully.");
+    }
+
 
 }
