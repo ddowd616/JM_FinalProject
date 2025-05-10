@@ -75,4 +75,37 @@ public class ItineraryService {
         return dto;
 
     }
+
+    public ItineraryDTO updateItineraryEntry(Long id, ItineraryDTO dto) {
+        Itinerary existingEntry = itineraryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Itinerary Entry not found"));
+        UserInfo userInfo = userInfoRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Country country = countryRepository.findById(dto.getCountryId())
+                .orElseThrow(() -> new RuntimeException("Country not found"));
+
+        existingEntry.setUserInfo(userInfo);
+        existingEntry.setCountry(country);
+        existingEntry.setOrderOnTrip(dto.getOrderOnTrip());
+        existingEntry.setCountryOfOrigin(dto.getCountryOfOrigin());
+        existingEntry.setStartDate(dto.getStartDate());
+        existingEntry.setEndDate(dto.getEndDate());
+        existingEntry.setDaysSpentInCountry(dto.getDaysSpentInCountry());
+        existingEntry.setUserWantsCurrencyExchangeRate(dto.getUserWantsCurrencyExchangeRate());
+
+        Itinerary updated = itineraryRepository.save(existingEntry);
+
+        ItineraryDTO response = new ItineraryDTO();
+        response.setId(updated.getId());
+        response.setUserId(updated.getUserInfo().getUserId());
+        response.setCountryId(updated.getCountry().getCountryId());
+        response.setOrderOnTrip(updated.getOrderOnTrip());
+        response.setCountryOfOrigin(updated.getCountryOfOrigin());
+        response.setStartDate(updated.getStartDate());
+        response.setEndDate(updated.getEndDate());
+        response.setDaysSpentInCountry(updated.getDaysSpentInCountry());
+        response.setUserWantsCurrencyExchangeRate(updated.getUserWantsCurrencyExchangeRate());
+
+        return response;
+    }
 }

@@ -116,4 +116,58 @@ public class ItineraryServiceTest {
         assertEquals("Itinerary Entry not found",exception.getMessage());
     }
 
+    @Test
+    void testUpdateItineraryEntry_Found(){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(4L);
+
+        Country country = new Country();
+        country.setCountryId(45L);
+
+        Itinerary existingEntry = new Itinerary();
+        existingEntry.setId(42L);
+        existingEntry.setUserInfo(userInfo);
+        existingEntry.setCountry(country);
+
+        ItineraryDTO updateDTO = new ItineraryDTO();
+        updateDTO.setId(42L);
+        updateDTO.setUserId(4L);
+        updateDTO.setCountryId(45L);
+        updateDTO.setOrderOnTrip(4);
+        updateDTO.setCountryOfOrigin(true);
+        updateDTO.setStartDate(LocalDate.of(2022,7,15));
+        updateDTO.setEndDate(LocalDate.of(2022,7,24));
+        updateDTO.setDaysSpentInCountry(9);
+        updateDTO.setUserWantsCurrencyExchangeRate(true);
+
+        when(itineraryRepository.findById(42L)).thenReturn(Optional.of(existingEntry));
+        when(userInfoRepository.findById(4L)).thenReturn(Optional.of(userInfo));
+        when(countryRepository.findById(45L)).thenReturn(Optional.of(country));
+        when(itineraryRepository.save(any(Itinerary.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ItineraryDTO result = itineraryService.updateItineraryEntry(42L,updateDTO);
+
+        assertEquals(4L,result.getUserId());
+        assertEquals(45L,result.getCountryId());
+        assertTrue(result.getCountryOfOrigin());
+        assertTrue(result.getUserWantsCurrencyExchangeRate());
+        assertEquals(4,result.getOrderOnTrip());
+        assertEquals(LocalDate.of(2022,7,15),result.getStartDate());
+        assertEquals(LocalDate.of(2022,7,24),result.getEndDate());
+        assertEquals(9,result.getDaysSpentInCountry());
+    }
+
+    @Test
+    void testUpdateItineraryEntry_NotFound(){
+        when(itineraryRepository.findById(4L)).thenReturn(Optional.empty());
+
+        ItineraryDTO updateDTO = new ItineraryDTO();
+        updateDTO.setUserId(3L);
+        updateDTO.setCountryId(35L);
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> itineraryService.updateItineraryEntry(4L,updateDTO));
+
+        assertEquals("Itinerary Entry not found",ex.getMessage());
+    }
+
 }

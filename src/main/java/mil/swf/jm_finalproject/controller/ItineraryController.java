@@ -26,5 +26,11 @@ public class ItineraryController {
         return ResponseEntity.ok(dto);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ItineraryDTO> updateItineray(@PathVariable Long id, @RequestBody ItineraryDTO dto){
+        ItineraryDTO updated = itineraryService.updateItineraryEntry(id,dto);
+        return ResponseEntity.ok(updated);
+    }
+
 
 }
