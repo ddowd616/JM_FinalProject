@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/userInfo")
@@ -27,6 +29,9 @@ public class UserInfoController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping
+    public List<UserInfoDTO> getAllUsersInfo(){return userInfoService.getAllUsersInfo();}
 
     @PutMapping("/{id}")
     public ResponseEntity<UserInfoDTO> updateUserInfo(@PathVariable Long id,@RequestBody UserInfoDTO userInfoDTO){

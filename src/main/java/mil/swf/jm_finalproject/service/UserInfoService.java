@@ -7,7 +7,9 @@ import mil.swf.jm_finalproject.repository.CountryRepository;
 import mil.swf.jm_finalproject.repository.UserInfoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserInfoService {
@@ -85,4 +87,20 @@ public class UserInfoService {
 
     }
 
+    public List<UserInfoDTO> getAllUsersInfo() {
+        return userInfoRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+    }
+
+    private UserInfoDTO convertToDTO(UserInfo userInfo){
+        return new UserInfoDTO(
+                userInfo.getUserId(),
+                userInfo.getCountryOfOrigin().getCountryId(),
+                userInfo.getUserName(),
+                userInfo.getUserPassword(),
+                userInfo.getDateOfBirth()
+        );
+    }
 }
