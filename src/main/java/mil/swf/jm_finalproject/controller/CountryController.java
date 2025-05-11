@@ -4,13 +4,11 @@ import mil.swf.jm_finalproject.DTO.CountryDTO;
 import mil.swf.jm_finalproject.entity.Country;
 import mil.swf.jm_finalproject.service.CountryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/country")
 public class CountryController {

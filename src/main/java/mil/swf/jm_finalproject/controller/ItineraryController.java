@@ -5,6 +5,7 @@ import mil.swf.jm_finalproject.service.ItineraryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/itineraries")
 public class ItineraryController {
