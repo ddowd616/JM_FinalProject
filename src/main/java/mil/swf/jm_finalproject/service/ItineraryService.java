@@ -9,6 +9,9 @@ import mil.swf.jm_finalproject.repository.ItineraryRepository;
 import mil.swf.jm_finalproject.repository.UserInfoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ItineraryService {
 
@@ -113,5 +116,33 @@ public class ItineraryService {
         Itinerary itineraryEntry = itineraryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Itinerary Entry not found"));
         itineraryRepository.delete(itineraryEntry);
+    }
+
+    public List<ItineraryDTO> getAllItineraries(Long userId) {
+        List<Itinerary> itineraries;
+
+        if (userId != null) {
+            itineraries = itineraryRepository.findByUserInfo_Id(userId);
+        } else {
+            itineraries = itineraryRepository.findAll();
+        }
+
+        return itineraries.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ItineraryDTO convertToDTO(Itinerary itinerary) {
+        return new ItineraryDTO(
+                itinerary.getId(),
+                itinerary.getUserInfo().getUserId(),
+                itinerary.getCountry().getCountryId(),
+                itinerary.getOrderOnTrip(),
+                itinerary.getCountryOfOrigin(),
+                itinerary.getStartDate(),
+                itinerary.getEndDate(),
+                itinerary.getDaysSpentInCountry(),
+                itinerary.getUserWantsCurrencyExchangeRate()
+        );
     }
 }

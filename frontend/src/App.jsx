@@ -4,6 +4,7 @@ import UserInfoForm from './components/UserInfoForm.jsx';
 import AnotherForm from './components/ItineraryForm.jsx';
 import {Button} from "@mui/material";
 import ItineraryForm from "./components/ItineraryForm.jsx";
+import ItineraryTable from "./components/ItineraryTable.jsx";
 
 export default function App() {
     return (
@@ -20,11 +21,17 @@ export default function App() {
                             Go to Itinerary Form
                         </Button>
                     </Link>
+                    <Link to="/form3">
+                        <Button variant="outlined">
+                            Go to Itinerary Table
+                        </Button>
+                    </Link>
                 </nav>
 
                 <Routes>
                     <Route path="/form1" element={<UserInfoForm />} />
                     <Route path="/form2" element={<ItineraryForm />} />
+                    <Route path="/form3" element={<ItineraryTable />} />
                 </Routes>
             </div>
         </Router>

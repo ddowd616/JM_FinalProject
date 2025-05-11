@@ -5,6 +5,8 @@ import mil.swf.jm_finalproject.service.ItineraryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/itineraries")
@@ -28,7 +30,7 @@ public class ItineraryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItineraryDTO> updateItineray(@PathVariable Long id, @RequestBody ItineraryDTO dto){
+    public ResponseEntity<ItineraryDTO> updateItinerary(@PathVariable Long id, @RequestBody ItineraryDTO dto){
         ItineraryDTO updated = itineraryService.updateItineraryEntry(id,dto);
         return ResponseEntity.ok(updated);
     }
@@ -37,6 +39,12 @@ public class ItineraryController {
     public ResponseEntity<String> deleteItinerary(@PathVariable Long id){
         itineraryService.deleteItineraryEntry(id);
         return ResponseEntity.ok("Itinerary deleted successfully.");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ItineraryDTO>> getItineraries(@RequestParam(required = false) Long userId) {
+        List<ItineraryDTO> itineraries = itineraryService.getAllItineraries(userId);
+        return ResponseEntity.ok(itineraries);
     }
 
 
