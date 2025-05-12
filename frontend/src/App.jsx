@@ -4,6 +4,7 @@ import UserInfoForm from './components/UserInfoForm.jsx';
 import {Button} from "@mui/material";
 import ItineraryForm from "./components/ItineraryForm.jsx";
 import ItineraryTable from "./components/ItineraryTable.jsx";
+import EditItinerary from "./components/EditItinerary.jsx";
 
 export default function App() {
     return (
@@ -31,6 +32,7 @@ export default function App() {
                     <Route path="/form1" element={<UserInfoForm />} />
                     <Route path="/form2" element={<ItineraryForm />} />
                     <Route path="/form3" element={<ItineraryTable />} />
+                    <Route path="/edit-itinerary/:id" element={<EditItinerary />} />
                 </Routes>
             </div>
         </Router>

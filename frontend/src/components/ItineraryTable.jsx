@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     Table, TableHead, TableBody, TableRow, TableCell,
-    FormControl, Select, MenuItem, Paper
+    FormControl, Select, MenuItem, Paper, Button
 } from '@mui/material';
+import {useNavigate} from "react-router-dom";
 
 const ItineraryTable = () => {
     const [users, setUsers] = useState([]);
@@ -11,6 +12,8 @@ const ItineraryTable = () => {
     const [selectedUserId, setSelectedUserId] = useState('');
     const [countries, setCountries] = useState([]);
     const [exchangeRates, setExchangeRates] = useState({});
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/userInfo')
@@ -114,6 +117,19 @@ const ItineraryTable = () => {
         return country ? country.name : 'Unknown Country';
     };
 
+    const handleDelete = (id) => {
+        axios.delete(`http://localhost:8080/api/itineraries/${id}`)
+            .then(() => {
+                setItineraries(itineraries.filter(it => it.id !== id)); // Update state to remove deleted itinerary
+            })
+            .catch(err => console.error("Error deleting itinerary:", err));
+    };
+
+    const handleEdit = (id) => {
+        // Navigate to the edit form or open a modal with the data
+        navigate(`/edit-itinerary/${id}`)
+        // You could use `history.push` or `navigate` here to redirect to the edit page
+    };
 
     return (
         <Paper style={{ padding: '1rem' }}>
@@ -143,6 +159,7 @@ const ItineraryTable = () => {
                         <TableCell>Origin?</TableCell>
                         <TableCell>Wants Exchange Rate?</TableCell>
                         <TableCell>Exchange Rate</TableCell>
+                        <TableCell>Actions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -172,6 +189,10 @@ const ItineraryTable = () => {
                                 <TableCell>{itinerary.countryOfOrigin ? 'Yes' : 'No'}</TableCell>
                                 <TableCell>{showRate ? 'Yes' : 'No'}</TableCell>
                                 <TableCell>{rateDisplay}</TableCell>
+                                <TableCell>
+                                    <Button variant="contained" color="primary" onClick={() => handleEdit(itinerary.id)}>Edit</Button>
+                                    <Button variant="contained" color="secondary" onClick={() => handleDelete(itinerary.id)}>Delete</Button>
+                                </TableCell>
                             </TableRow>
                         );
                     })}

@@ -1,26 +1,23 @@
-import { useState } from 'react';
-import {
-    TextField,
-    Button,
-    Box,
-    Typography,
-    Checkbox,
-    FormControlLabel,
-    FormLabel,
-    RadioGroup,
-    Radio
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {
+    Box, Typography, TextField, FormControlLabel, Checkbox,
+    FormLabel, RadioGroup, Radio, Button
+} from '@mui/material';
 
-export default function ItineraryForm() {
+const EditItinerary = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         userId: '',
         countryId: '',
-        orderOnTrip: 1,
+        orderOnTrip: '',
         countryOfOrigin: false,
         startDate: '',
         endDate: '',
-        daysSpentInCountry: 1,
+        daysSpentInCountry: '',
         userWantsCurrencyExchangeRate: false
     });
 
@@ -222,38 +219,45 @@ export default function ItineraryForm() {
         { id: 195, name: "Zimbabwe" },
     ];
 
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/itineraries/${id}`)
+            .then(res => {
+                const data = res.data;
+                setFormData({
+                    userId: data.userId || '',
+                    countryId: data.countryId || '',
+                    orderOnTrip: data.orderOnTrip || '',
+                    countryOfOrigin: data.countryOfOrigin || false,
+                    startDate: data.startDate || '',
+                    endDate: data.endDate || '',
+                    daysSpentInCountry: data.daysSpentInCountry || '',
+                    userWantsCurrencyExchangeRate: data.userWantsCurrencyExchangeRate || false
+                });
+            })
+            .catch(err => console.error(err));
+
+    }, [id]);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
+        const newValue =
+            type === 'checkbox' ? checked :
+                name === 'userWantsCurrencyExchangeRate' ? (value === 'true') :
+                    value;
+        setFormData({ ...formData, [name]: newValue });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
-        if (!formData.countryId) {
-            alert("Please select a country.");
-            return;
-        }
-
-        console.log(formData)
-
-        try {
-            const response = await axios.post('http://localhost:8080/api/itineraries/create', formData);
-            console.log("Itinerary submitted successfully:", response.data);
-            alert(`Itinerary submitted with ID: ${response.data.id}`);
-        } catch (error) {
-            console.error("Error submitting itinerary:", error);
-            alert("There was an error submitting your itinerary.");
-        }
+        axios.put(`http://localhost:8080/api/itineraries/${id}`, formData)
+            .then(() => navigate('/form3'))
+            .catch(err => console.error(err));
     };
 
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ m: 4 }}>
             <Typography variant="h5" gutterBottom>
-                Itinerary Form
+                Edit Itinerary
             </Typography>
 
             <TextField
@@ -318,9 +322,7 @@ export default function ItineraryForm() {
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
-                InputLabelProps={{
-                    shrink: true
-                }}
+                InputLabelProps={{ shrink: true }}
                 required
             />
 
@@ -332,9 +334,7 @@ export default function ItineraryForm() {
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
-                InputLabelProps={{
-                    shrink: true
-                }}
+                InputLabelProps={{ shrink: true }}
                 required
             />
 
@@ -361,8 +361,10 @@ export default function ItineraryForm() {
             </RadioGroup>
 
             <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-                Submit Itinerary
+                Save Changes
             </Button>
         </Box>
     );
-}
+};
+
+export default EditItinerary;
