@@ -12,13 +12,12 @@ const ItineraryTable = () => {
     const [countries, setCountries] = useState([]);
     const [exchangeRates, setExchangeRates] = useState({});
 
-
     useEffect(() => {
-
         axios.get('http://localhost:8080/api/userInfo')
             .then(res => setUsers(res.data))
             .catch(err => console.error(err));
     }, []);
+
     useEffect(() => {
         axios.get('http://localhost:8080/api/country')
             .then(res => setCountries(res.data))
@@ -26,13 +25,10 @@ const ItineraryTable = () => {
     }, []);
 
     useEffect(() => {
-        console.log("Get By userId: ", users);
-        if (users === null)
-            return
-
         const url = selectedUserId
             ? `http://localhost:8080/api/itineraries/user/${selectedUserId}`
             : 'http://localhost:8080/api/itineraries';
+
         axios.get(url)
             .then(res => setItineraries(res.data))
             .catch(err => console.error(err));
@@ -42,85 +38,79 @@ const ItineraryTable = () => {
         if (!countries.length || !itineraries.length) return;
 
         const originItinerary = itineraries.find(it => it.countryOfOrigin);
-        if (!originItinerary) {
-            console.error("No origin itinerary found.");
-            return;
-        }
-
-        // console.log("Found origin itinerary:", originItinerary);
+        if (!originItinerary) return;
 
         const originCountry = countries.find(c => String(c.id) === String(originItinerary.countryId));
-
-        if (!originCountry) {
-            console.error("Origin country not found for countryId:", originItinerary.countryId);
-            return;
-        }
-
-        // console.log('Found origin country:', originCountry);
-
-        const destinationItinerary = itineraries.find(it => it.id !== originItinerary.id);
-        if (!destinationItinerary) {
-            console.error("No destination itinerary found.");
-            return;
-        }
-
-        const destinationCountry = countries.find(c => String(c.id) === String(destinationItinerary.countryId));
-        if (!destinationCountry) {
-            console.error("Destination country not found for countryId:", destinationItinerary.countryId);
-            return;
-        }
-
-        // console.log('Found destination country:', destinationCountry);
+        if (!originCountry || !originCountry.currencyCode) return;
 
         const originCurrencyCode = originCountry.currencyCode;
-        const destinationCurrencyCode = destinationCountry.currencyCode;
 
+        // Collect destination currency codes
+        const destinationCurrencyCodes = [
+            ...new Set(
+                itineraries
+                    .filter(it => !it.countryOfOrigin && it.userWantsCurrencyExchangeRate)
+                    .map(it => {
+                        const country = countries.find(c => String(c.id) === String(it.countryId));
+                        return country?.currencyCode;
+                    })
+                    .filter(code => code && code !== originCurrencyCode)
+            )
+        ];
 
-
-        if (originCurrencyCode && destinationCurrencyCode) {
-            axios.get(`https://apilayer.net/api/live?access_key=6444e2260317901cb0f2300ab988ef2a&currencies=${destinationCurrencyCode}&source=${originCurrencyCode}&format=1`)
-                .then(res => {
-                    console.log(res)
-                    // console.log("rate", res.data.quotes.${originCurrencyCode})
-                    const quoteKey = `${originCurrencyCode}${destinationCurrencyCode}`;
-                    console.log(quoteKey)
-                    const exchangeRate = res.data.quotes[quoteKey];
-                    console.log(exchangeRate)
-                    if (exchangeRate) {
-                        setExchangeRates(res.data.quotes);
-                    } else {
-                        console.error("Exchange rate not found for:", quoteKey);
-                        setExchangeRates("N/A");
-                    }
-                })
-                .catch(err => {
-                    console.error("Error fetching exchange rate", err);
-                    setExchangeRates("N/A");
-                });
-        } else {
-            console.error("Invalid currency codes");
-            setExchangeRates("N/A");
+        // If origin wants rate to USD, include USD
+        if (originItinerary.userWantsCurrencyExchangeRate && !destinationCurrencyCodes.includes('USD')) {
+            destinationCurrencyCodes.push('USD');
         }
 
+        if (!destinationCurrencyCodes.length) return;
 
+        // Fetch exchange rates using USD as source
+        axios.get(`https://apilayer.net/api/live?access_key=6444e2260317901cb0f2300ab988ef2a&currencies=${[originCurrencyCode, ...destinationCurrencyCodes].join(',')}&source=USD&format=1`)
+            .then(res => {
+                const usdQuotes = res.data.quotes;
+                const newExchangeRates = {};
+
+                destinationCurrencyCodes.forEach(dest => {
+                    const usdToDest = usdQuotes[`USD${dest}`];
+                    const usdToOrigin = usdQuotes[`USD${originCurrencyCode}`];
+
+                    if (originCurrencyCode === dest) {
+                        newExchangeRates[`${originCurrencyCode}${dest}`] = "1.00";
+                    } else if (dest === "USD") {
+                        if (usdToOrigin) {
+                            const rate = (1 / usdToOrigin).toFixed(8); // origin → USD
+                            newExchangeRates[`${originCurrencyCode}USD`] = rate;
+                        } else {
+                            newExchangeRates[`${originCurrencyCode}USD`] = 'N/A';
+                        }
+                    } else if (usdToDest && usdToOrigin) {
+                        const rate = (usdToDest / usdToOrigin).toFixed(8); // origin → dest
+                        newExchangeRates[`${originCurrencyCode}${dest}`] = rate;
+                    } else {
+                        newExchangeRates[`${originCurrencyCode}${dest}`] = 'N/A';
+                    }
+                });
+
+                setExchangeRates(newExchangeRates);
+            })
+            .catch(err => {
+                console.error("Error fetching exchange rates:", err);
+            });
     }, [countries, itineraries]);
+
     const getExchangeRate = (originCode, destCode) => {
         const pair = `${originCode}${destCode}`;
-        return exchangeRates[pair] ? exchangeRates[pair].toFixed(2) : 'N/A';
+        return exchangeRates[pair] || 'N/A';
     };
 
     const originItinerary = itineraries.find(it => it.countryOfOrigin === true);
     const originCountry = countries.find(c => c.id === originItinerary?.countryId);
     const originCurrencyCode = originCountry?.currencyCode || '';
 
-    // console.log('Origin Itinerary:', originItinerary);
-    // console.log('Origin Country:', originCountry);
-    //
-    // console.log("Available country IDs:", countries.map(c => c.id));
     return (
         <Paper style={{ padding: '1rem' }}>
             <FormControl fullWidth margin="normal">
-
                 <Select
                     value={selectedUserId}
                     onChange={(e) => setSelectedUserId(e.target.value)}
@@ -153,7 +143,18 @@ const ItineraryTable = () => {
                     {itineraries.map((itinerary) => {
                         const destCountry = countries.find(c => c.id === itinerary.countryId);
                         const destCurrency = destCountry?.currencyCode || '';
-                        const showRate = itinerary.userWantsCurrencyExchangeRate && originCurrencyCode && destCurrency && originCurrencyCode !== destCurrency;
+                        const showRate = itinerary.userWantsCurrencyExchangeRate;
+
+                        let rateDisplay = 'N/A';
+                        if (showRate) {
+                            if (itinerary.countryOfOrigin) {
+                                rateDisplay = `${originCurrencyCode} → USD: ${getExchangeRate(originCurrencyCode, 'USD')}`;
+                            } else if (originCurrencyCode !== destCurrency) {
+                                rateDisplay = `${originCurrencyCode} → ${destCurrency}: ${getExchangeRate(originCurrencyCode, destCurrency)}`;
+                            } else {
+                                rateDisplay = '1.00';
+                            }
+                        }
 
                         return (
                             <TableRow key={itinerary.id}>
@@ -164,12 +165,8 @@ const ItineraryTable = () => {
                                 <TableCell>{itinerary.endDate}</TableCell>
                                 <TableCell>{itinerary.daysSpentInCountry}</TableCell>
                                 <TableCell>{itinerary.countryOfOrigin ? 'Yes' : 'No'}</TableCell>
-                                <TableCell>{itinerary.userWantsCurrencyExchangeRate ? 'Yes' : 'No'}</TableCell>
-                                <TableCell>
-                                    {showRate
-                                        ? `${originCurrencyCode} → ${destCurrency}: ${getExchangeRate(originCurrencyCode, destCurrency)}`
-                                        : 'N/A'}
-                                </TableCell>
+                                <TableCell>{showRate ? 'Yes' : 'No'}</TableCell>
+                                <TableCell>{rateDisplay}</TableCell>
                             </TableRow>
                         );
                     })}
