@@ -18,6 +18,9 @@ const ItineraryTable = () => {
     }, []);
 
     useEffect(() => {
+        console.log("Get By userId: ", users);
+        if (users === null)
+            return
         // Fetch itineraries (optionally filtered)
         const url = selectedUserId
             ? `http://localhost:8080/api/itineraries/user/${selectedUserId}`
@@ -27,6 +30,8 @@ const ItineraryTable = () => {
             .catch(err => console.error(err));
     }, [selectedUserId]);
 
+
+
     return (
         <Paper style={{ padding: '1rem' }}>
             <FormControl fullWidth margin="normal">
@@ -34,11 +39,12 @@ const ItineraryTable = () => {
                 <Select
                     value={selectedUserId}
                     onChange={(e) => setSelectedUserId(e.target.value)}
+                    displayEmpty
                 >
                     <MenuItem value="">All Users</MenuItem>
                     {users.map((user) => (
-                        <MenuItem key={user.id} value={user.id}>
-                            {user.username} (ID: {user.id})
+                        <MenuItem key={user.id} value={String(user.userId)}>
+                            {user.userName} (ID: {user.userId})
                         </MenuItem>
                     ))}
                 </Select>

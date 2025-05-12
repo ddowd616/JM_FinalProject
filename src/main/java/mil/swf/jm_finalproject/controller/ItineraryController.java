@@ -47,5 +47,10 @@ public class ItineraryController {
         return ResponseEntity.ok(itineraries);
     }
 
+    @GetMapping("/user/{userId}")
+    public List<ItineraryDTO> getItinerariesByUserId(@PathVariable Long userId) {
+        return itineraryService.getItinerariesByUserId(userId);
+    }
+
 
 }

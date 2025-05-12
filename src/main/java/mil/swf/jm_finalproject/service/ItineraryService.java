@@ -9,6 +9,7 @@ import mil.swf.jm_finalproject.repository.ItineraryRepository;
 import mil.swf.jm_finalproject.repository.UserInfoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -144,5 +145,28 @@ public class ItineraryService {
                 itinerary.getDaysSpentInCountry(),
                 itinerary.getUserWantsCurrencyExchangeRate()
         );
+    }
+
+    public List<ItineraryDTO> getItinerariesByUserId(Long userId) {
+        List<Itinerary> itineraries = itineraryRepository.findByUserInfo_Id(userId);
+        List<ItineraryDTO> itineraryDTOS = new ArrayList<>();
+
+        for (Itinerary itinerary:itineraries){
+            itineraryDTOS.add(convertToDTO_1(itinerary));
+        }
+        return itineraryDTOS;
+    }
+
+    private ItineraryDTO convertToDTO_1(Itinerary itinerary) {
+        ItineraryDTO itineraryDTO = new ItineraryDTO();
+        itineraryDTO.setId(itinerary.getId());
+        itineraryDTO.setUserId(itinerary.getUserInfo().getUserId());
+        itineraryDTO.setCountryId(itinerary.getCountry().getCountryId());
+        itineraryDTO.setStartDate(itinerary.getStartDate());
+        itineraryDTO.setEndDate(itinerary.getEndDate());
+        itineraryDTO.setDaysSpentInCountry(itinerary.getDaysSpentInCountry());
+        itineraryDTO.setCountryOfOrigin(itinerary.getCountryOfOrigin());
+        itineraryDTO.setUserWantsCurrencyExchangeRate(itinerary.getUserWantsCurrencyExchangeRate());
+        return itineraryDTO;
     }
 }
