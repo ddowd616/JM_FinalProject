@@ -47,7 +47,7 @@ const ItineraryTable = () => {
             return;
         }
 
-        console.log("Found origin itinerary:", originItinerary);
+        // console.log("Found origin itinerary:", originItinerary);
 
         const originCountry = countries.find(c => String(c.id) === String(originItinerary.countryId));
 
@@ -56,7 +56,7 @@ const ItineraryTable = () => {
             return;
         }
 
-        console.log('Found origin country:', originCountry);
+        // console.log('Found origin country:', originCountry);
 
         const destinationItinerary = itineraries.find(it => it.id !== originItinerary.id);
         if (!destinationItinerary) {
@@ -70,7 +70,7 @@ const ItineraryTable = () => {
             return;
         }
 
-        console.log('Found destination country:', destinationCountry);
+        // console.log('Found destination country:', destinationCountry);
 
         const originCurrencyCode = originCountry.currencyCode;
         const destinationCurrencyCode = destinationCountry.currencyCode;
@@ -80,11 +80,14 @@ const ItineraryTable = () => {
         if (originCurrencyCode && destinationCurrencyCode) {
             axios.get(`https://apilayer.net/api/live?access_key=6444e2260317901cb0f2300ab988ef2a&currencies=${destinationCurrencyCode}&source=${originCurrencyCode}&format=1`)
                 .then(res => {
+                    console.log(res)
+                    // console.log("rate", res.data.quotes.${originCurrencyCode})
                     const quoteKey = `${originCurrencyCode}${destinationCurrencyCode}`;
-                    const exchangeRate = res.data.quotes?.[quoteKey];
-
+                    console.log(quoteKey)
+                    const exchangeRate = res.data.quotes[quoteKey];
+                    console.log(exchangeRate)
                     if (exchangeRate) {
-                        setExchangeRates(exchangeRate.toFixed(2));
+                        setExchangeRates(res.data.quotes);
                     } else {
                         console.error("Exchange rate not found for:", quoteKey);
                         setExchangeRates("N/A");
@@ -102,7 +105,7 @@ const ItineraryTable = () => {
 
     }, [countries, itineraries]);
     const getExchangeRate = (originCode, destCode) => {
-        const pair = `${originCode}_${destCode}`;
+        const pair = `${originCode}${destCode}`;
         return exchangeRates[pair] ? exchangeRates[pair].toFixed(2) : 'N/A';
     };
 
@@ -110,10 +113,10 @@ const ItineraryTable = () => {
     const originCountry = countries.find(c => c.id === originItinerary?.countryId);
     const originCurrencyCode = originCountry?.currencyCode || '';
 
-    console.log('Origin Itinerary:', originItinerary);
-    console.log('Origin Country:', originCountry);
-
-    console.log("Available country IDs:", countries.map(c => c.id));
+    // console.log('Origin Itinerary:', originItinerary);
+    // console.log('Origin Country:', originCountry);
+    //
+    // console.log("Available country IDs:", countries.map(c => c.id));
     return (
         <Paper style={{ padding: '1rem' }}>
             <FormControl fullWidth margin="normal">
