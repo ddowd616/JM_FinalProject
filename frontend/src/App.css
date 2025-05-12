@@ -1,1 +1,24 @@
+.app-background {
+    min-height: 100vh;
+    background-image: url('./assets/money_bacground.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.user-info-bg {
+    background-color: #f0f8ff; /* Light blue */
+    min-height: 100vh;
+    padding: 2rem;
+}
 
+.itinerary-form-bg {
+    background-color: #e6ffe6; /* Light green */
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.itinerary-table-bg {
+    background-color: #fff0f5; /* Light pink */
+    min-height: 100vh;
+    padding: 2rem;
+}

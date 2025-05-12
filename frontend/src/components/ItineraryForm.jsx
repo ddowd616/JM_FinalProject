@@ -251,118 +251,121 @@ export default function ItineraryForm() {
     };
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ m: 4 }}>
-            <Typography variant="h5" gutterBottom>
-                Itinerary Form
-            </Typography>
+        <div style={{ backgroundColor: '#e6ffe6', padding: '2rem' }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ m: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                    Itinerary Form
+                </Typography>
 
-            <TextField
-                label="User Id"
-                name="userId"
-                type="number"
-                value={formData.userId}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-            />
+                <TextField
+                    label="User Id"
+                    name="userId"
+                    type="number"
+                    value={formData.userId}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                />
 
-            <TextField
-                label=""
-                name="countryId"
-                value={formData.countryId}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-                select
-                SelectProps={{
-                    native: true
-                }}
-            >
-                <option value="">Select a country</option>
-                {countries.map((country) => (
-                    <option key={country.id} value={country.id}>
-                        {country.name}
-                    </option>
-                ))}
-            </TextField>
+                <TextField
+                    label=""
+                    name="countryId"
+                    value={formData.countryId}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                    select
+                    SelectProps={{
+                        native: true
+                    }}
+                >
+                    <option value="">Select a country</option>
+                    {countries.map((country) => (
+                        <option key={country.id} value={country.id}>
+                            {country.name}
+                        </option>
+                    ))}
+                </TextField>
 
-            <TextField
-                label="Order on Trip"
-                name="orderOnTrip"
-                type="number"
-                value={formData.orderOnTrip}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-            />
+                <TextField
+                    label="Order on Trip"
+                    name="orderOnTrip"
+                    type="number"
+                    value={formData.orderOnTrip}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                />
 
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        name="countryOfOrigin"
-                        checked={formData.countryOfOrigin}
-                        onChange={handleChange}
-                    />
-                }
-                label="Is this the country of origin?"
-            />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            name="countryOfOrigin"
+                            checked={formData.countryOfOrigin}
+                            onChange={handleChange}
+                        />
+                    }
+                    label="Is this the country of origin?"
+                />
 
-            <TextField
-                label="Start Date"
-                name="startDate"
-                type="date"
-                value={formData.startDate}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                    shrink: true
-                }}
-                required
-            />
+                <TextField
+                    label="Start Date"
+                    name="startDate"
+                    type="date"
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{
+                        shrink: true
+                    }}
+                    required
+                />
 
-            <TextField
-                label="End Date"
-                name="endDate"
-                type="date"
-                value={formData.endDate}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                    shrink: true
-                }}
-                required
-            />
+                <TextField
+                    label="End Date"
+                    name="endDate"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{
+                        shrink: true
+                    }}
+                    required
+                />
 
-            <TextField
-                label="Days Spent in Country"
-                name="daysSpentInCountry"
-                type="number"
-                value={formData.daysSpentInCountry}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-            />
+                <TextField
+                    label="Days Spent in Country"
+                    name="daysSpentInCountry"
+                    type="number"
+                    value={formData.daysSpentInCountry}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                />
 
-            <FormLabel component="legend">Do you want the currency exchange rate?</FormLabel>
-            <RadioGroup
-                name="userWantsCurrencyExchangeRate"
-                value={String(formData.userWantsCurrencyExchangeRate)}
-                onChange={handleChange}
-                row
-            >
-                <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                <FormControlLabel value="false" control={<Radio />} label="No" />
-            </RadioGroup>
+                <FormLabel component="legend">Do you want the currency exchange rate?</FormLabel>
+                <RadioGroup
+                    name="userWantsCurrencyExchangeRate"
+                    value={String(formData.userWantsCurrencyExchangeRate)}
+                    onChange={handleChange}
+                    row
+                >
+                    <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                    <FormControlLabel value="false" control={<Radio />} label="No" />
+                </RadioGroup>
 
-            <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-                Submit Itinerary
-            </Button>
-        </Box>
+                <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+                    Submit Itinerary
+                </Button>
+            </Box>
+        </div>
+
     );
 }

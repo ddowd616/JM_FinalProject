@@ -5,6 +5,8 @@ import ItineraryForm from './components/ItineraryForm.jsx';
 import ItineraryTable from './components/ItineraryTable.jsx';
 import EditItinerary from './components/EditItinerary.jsx';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import bgImage from './assets/money_bacground.jpg';
+
 
 export default function App() {
     const linkStyle = {
@@ -12,9 +14,17 @@ export default function App() {
         textDecoration: 'none',
         marginRight: '16px',
     };
+
+    const appStyle = {
+        minHeight: '100vh',
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+    };
     return (
         <Router>
-            <div>
+            <div style={appStyle}>
                 <AppBar position="fixed" sx={{ height: 64, justifyContent: 'center' }}>
                     <Toolbar sx={{ minHeight: 64, display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h6" component="div">

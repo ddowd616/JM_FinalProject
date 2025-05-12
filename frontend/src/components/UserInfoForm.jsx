@@ -233,65 +233,69 @@ export default function UserInfoForm() {
     };
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ m: 4, maxWidth: 600 }}>
-            <Typography variant="h5" gutterBottom>
-                User Info Form
-            </Typography>
+        <div style={{ backgroundColor: '#e6ffe6', padding: '2rem' }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ m: 4, maxWidth: 600 }}>
+                <Typography variant="h5" gutterBottom>
+                    User Info Form
+                </Typography>
 
-            <TextField
-                label="Username"
-                name="userName"
-                value={form.userName}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-            />
+                <TextField
+                    label="Username"
+                    name="userName"
+                    value={form.userName}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                />
 
-            <TextField
-                label="Password"
-                name="userPassword"
-                type="password"
-                value={form.userPassword}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-            />
+                <TextField
+                    label="Password"
+                    name="userPassword"
+                    type="password"
+                    value={form.userPassword}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                />
 
-            <TextField
-                label="Date of Birth"
-                name="dateOfBirth"
-                type="date"
-                value={form.dateOfBirth}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                fullWidth
-                margin="normal"
-                required
-            />
+                <TextField
+                    label="Date of Birth"
+                    name="dateOfBirth"
+                    type="date"
+                    value={form.dateOfBirth}
+                    onChange={handleChange}
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                    margin="normal"
+                    required
+                />
 
-            {/* Country Dropdown */}
-            <TextField
-                select
-                label="Country"
-                name="countryId"
-                value={form.countryId || ''}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-            >
-                {countries.map((country) => (
-                    <MenuItem key={country.countryId} value={country.countryId}>
-                        {country.countryName}
-                    </MenuItem>
-                ))}
-            </TextField>
+                {/* Country Dropdown */}
+                <TextField
+                    select
+                    label="Country"
+                    name="countryId"
+                    value={form.countryId || ''}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                >
+                    {countries.map((country) => (
+                        <MenuItem key={country.countryId} value={country.countryId}>
+                            {country.countryName}
+                        </MenuItem>
+                    ))}
+                </TextField>
 
-            <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-                Submit
-            </Button>
-        </Box>
+                <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+                    Submit
+                </Button>
+            </Box>
+        </div>
+
+
     );
 }
