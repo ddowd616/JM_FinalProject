@@ -1,16 +1,26 @@
 package mil.swf.jm_finalproject.DTO;
 
 public class CountryDTO {
+    private Long id;
     private String countryName;
     private String currencyName;
     private String currencyCode;
     private String currencyCountryUses;
 
-    public CountryDTO(String countryName, String currencyName, String currencyCode, String currencyCountryUses) {
+    public CountryDTO(Long id, String countryName, String currencyName, String currencyCode, String currencyCountryUses) {
+        this.id = id;
         this.countryName = countryName;
         this.currencyName = currencyName;
         this.currencyCode = currencyCode;
         this.currencyCountryUses = currencyCountryUses;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCountryName() {

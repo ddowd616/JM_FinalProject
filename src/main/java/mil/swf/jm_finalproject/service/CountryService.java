@@ -29,6 +29,7 @@ public class CountryService {
                             .map(CurrencyCode::getCurrencyCode)
                             .orElse("N/A");
                     return new CountryDTO(
+                            country.getCountryId(),
                         country.getCountryName(),
                         currencyName,
                         currencyCode,
@@ -40,6 +41,7 @@ public class CountryService {
     public Optional<CountryDTO> getCountryByID(Long id) {
         Optional<Country> country = countryRepository.findById(id);
         return country.map(c -> new CountryDTO(
+                c.getCountryId(),
                 c.getCountryName(),
                 c.getCurrency().getCurrencyName(),
                 c.getCurrency().getCurrencyCode(),

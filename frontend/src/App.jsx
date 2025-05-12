@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import UserInfoForm from './components/UserInfoForm.jsx';
-import AnotherForm from './components/ItineraryForm.jsx';
 import {Button} from "@mui/material";
 import ItineraryForm from "./components/ItineraryForm.jsx";
 import ItineraryTable from "./components/ItineraryTable.jsx";
