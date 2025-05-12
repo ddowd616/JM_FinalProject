@@ -25,7 +25,6 @@ const ItineraryTable = () => {
         axios.get('http://localhost:8080/api/country')
             .then(res => setCountries(res.data))
             .catch(err => console.error(err));
-        console.log('Countries Data:', countries);
     }, []);
 
     useEffect(() => {
@@ -191,7 +190,7 @@ const ItineraryTable = () => {
                                 <TableCell>{rateDisplay}</TableCell>
                                 <TableCell>
                                     <Button variant="contained" color="primary" onClick={() => handleEdit(itinerary.id)}>Edit</Button>
-                                    <Button variant="contained" color="secondary" onClick={() => handleDelete(itinerary.id)}>Delete</Button>
+                                    <Button variant="contained" color="error" onClick={() => handleDelete(itinerary.id)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         );
