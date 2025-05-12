@@ -22,6 +22,7 @@ const ItineraryTable = () => {
         axios.get('http://localhost:8080/api/country')
             .then(res => setCountries(res.data))
             .catch(err => console.error(err));
+        console.log('Countries Data:', countries);
     }, []);
 
     useEffect(() => {
@@ -108,6 +109,12 @@ const ItineraryTable = () => {
     const originCountry = countries.find(c => c.id === originItinerary?.countryId);
     const originCurrencyCode = originCountry?.currencyCode || '';
 
+    const getCountryNameById = (countryId) => {
+        const country = countries.find(c => String(c.id) === String(countryId));
+        return country ? country.name : 'Unknown Country';
+    };
+
+
     return (
         <Paper style={{ padding: '1rem' }}>
             <FormControl fullWidth margin="normal">
@@ -128,9 +135,8 @@ const ItineraryTable = () => {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Itinerary ID</TableCell>
                         <TableCell>User ID</TableCell>
-                        <TableCell>Country ID</TableCell>
+                        <TableCell>Country</TableCell>
                         <TableCell>Start Date</TableCell>
                         <TableCell>End Date</TableCell>
                         <TableCell>Days</TableCell>
@@ -142,7 +148,7 @@ const ItineraryTable = () => {
                 <TableBody>
                     {itineraries.map((itinerary) => {
                         const destCountry = countries.find(c => c.id === itinerary.countryId);
-                        const destCurrency = destCountry?.currencyCode || '';
+                        const destCurrency = destCountry?.currencyCode || 'Unknown Currency';
                         const showRate = itinerary.userWantsCurrencyExchangeRate;
 
                         let rateDisplay = 'N/A';
@@ -158,9 +164,8 @@ const ItineraryTable = () => {
 
                         return (
                             <TableRow key={itinerary.id}>
-                                <TableCell>{itinerary.id}</TableCell>
                                 <TableCell>{itinerary.userId}</TableCell>
-                                <TableCell>{itinerary.countryId}</TableCell>
+                                <TableCell>{destCountry ? destCountry.countryName : 'Unknown Country'}</TableCell>
                                 <TableCell>{itinerary.startDate}</TableCell>
                                 <TableCell>{itinerary.endDate}</TableCell>
                                 <TableCell>{itinerary.daysSpentInCountry}</TableCell>
