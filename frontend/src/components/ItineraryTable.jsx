@@ -48,7 +48,7 @@ const ItineraryTable = () => {
 
         const originCurrencyCode = originCountry.currencyCode;
 
-        // Collect destination currency codes
+        // Collect destination currency code
         const destinationCurrencyCodes = [
             ...new Set(
                 itineraries
@@ -61,7 +61,7 @@ const ItineraryTable = () => {
             )
         ];
 
-        // If origin wants rate to USD, include USD
+        //In case the user wanted USDs
         if (originItinerary.userWantsCurrencyExchangeRate && !destinationCurrencyCodes.includes('USD')) {
             destinationCurrencyCodes.push('USD');
         }
@@ -125,9 +125,7 @@ const ItineraryTable = () => {
     };
 
     const handleEdit = (id) => {
-        // Navigate to the edit form or open a modal with the data
         navigate(`/edit-itinerary/${id}`)
-        // You could use `history.push` or `navigate` here to redirect to the edit page
     };
 
     return (
